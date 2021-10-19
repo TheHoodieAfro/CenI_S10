@@ -10,6 +10,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -24,15 +27,20 @@ public class Appointment {
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private long id;
 	
+	@NotNull
+	@FutureOrPresent
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate date;
 	
+	@NotNull
 	@DateTimeFormat(iso = ISO.TIME)
 	private LocalTime time;
 	
+	@NotNull
 	@ManyToOne
 	private User patient;
 	
+	@NotNull
 	@ManyToOne
 	private User doctor;
 }

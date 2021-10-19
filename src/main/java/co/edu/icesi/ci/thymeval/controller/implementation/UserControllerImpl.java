@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,7 +50,11 @@ public class UserControllerImpl implements UserController {
 	}
 
 	@PostMapping("/users/add")
-	public String saveUser(User user, Model model, @RequestParam(value = "action", required = true) String action) {
+	public String saveUser(@Validated User user, BindingResult bindingResult, Model model, @RequestParam(value = "action", required = true) String action) {
+		if(bindingResult.hasErrors()) {
+			model.addAttribute("users", userService.findAll());
+			return "users/index";
+		}
 		if (!action.equals("Cancel"))
 			userService.save(user);
 		return "redirect:/users/";
@@ -67,7 +73,11 @@ public class UserControllerImpl implements UserController {
 
 	@PostMapping("/users/edit/{id}")
 	public String updateUser(@PathVariable("id") long id,
-			@RequestParam(value = "action", required = true) String action, User user, Model model) {
+			@RequestParam(value = "action", required = true) String action, @Validated User user, BindingResult bindingResult, Model model) {
+		if(bindingResult.hasErrors()) {
+			model.addAttribute("users", userService.findAll());
+			return "users/index";
+		}
 		if (action != null && !action.equals("Cancel")) {
 			userService.save(user);
 			model.addAttribute("users", userService.findAll());
