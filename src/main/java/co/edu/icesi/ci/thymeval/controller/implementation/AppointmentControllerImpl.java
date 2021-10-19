@@ -57,6 +57,10 @@ public class AppointmentControllerImpl implements AppointmentController {
 	@PostMapping("/apps/add")
 	public String saveApp(@RequestParam(value = "action", required = true) String action, @Validated Appointment app, BindingResult bindingResult,
 			Model model) {
+		if(bindingResult.hasErrors()) {
+			model.addAttribute("apps", appointmentService.findAll());
+			return "apps/index";
+		}
 		if (!action.equals("Cancel"))
 			appointmentService.save(app);
 		return "redirect:/apps/";
@@ -77,6 +81,10 @@ public class AppointmentControllerImpl implements AppointmentController {
 	@PostMapping("/apps/edit/{id}")
 	public String updateApp(@PathVariable("id") long id, @RequestParam(value = "action", required = true) String action,
 			@Validated Appointment app, BindingResult bindingResult, Model model) {
+		if(bindingResult.hasErrors()) {
+			model.addAttribute("apps", appointmentService.findAll());
+			return "apps/index";
+		}
 		if (!action.equals("Cancel")) {
 			appointmentService.save(app);
 			model.addAttribute("apps", appointmentService.findAll());
